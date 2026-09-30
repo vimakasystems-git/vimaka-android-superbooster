@@ -1,4 +1,4 @@
-# Vimaka Android SuperBooster 1.1.0
+# Vimaka Android SuperBooster 1.2.0
 
 Created by Douglas Cardoso | https://vimaka.com | WhatsApp +55 11 945546072
 
@@ -43,3 +43,18 @@ https://support.google.com/googleplay/android-developer/answer/10158779
 https://support.google.com/googleplay/android-developer/answer/12085295
 https://source.android.com/docs/core/perf/mmd
 https://github.com/termux/proot-distro
+
+## Novos recursos 1.2.0
+- Diagnóstico pontual: RAM disponível/pressão, bateria/temperatura, estado térmico, espaço e leitura/escrita de 1 MiB. Não é um benchmark CPU/GPU nem validação no tablet.
+- DNS da rede ativa, interface e gateways, DNS privado e tempos DNS/HTTPS; teste example.com após confirmação. Não mede banda máxima nem muda roteador.
+- Orientação para DNS privado filtrado externo (AdGuard); app não implementa VPN/firewall nem classificação jurídica de anúncios.
+- Scanner QR ZXing com foco/lanterna e importação de imagem pelo seletor Android. Leitura local com binarização adaptativa/global e inversão de cores. Não altera a câmera de outros apps.
+- Developer: aplicação/restauração das três escalas de animação após concessão manual WRITE_SECURE_SETTINGS via ADB. Backup persistido antes de aplicar. Não toca clocks, limites de processos, thermal throttling, swap ou ROM.
+- Compositor SMS/WhatsApp/e-mail com mensagem editável, um destinatário por vez e confirmação de opt-in. Abre rascunho no aplicativo externo; não envia, não lê contatos/SMS e não faz campanha em massa. O texto SAIR não cria serviço automático de opt-out.
+- Catálogo estático de 26 nomes/URLs observados na página oficial em 30/09/2026; recursos dos serviços não foram validados. Reconsultar catálogo ao atualizar.
+
+## Teste inicial de CI
+A primeira execução falhou antes da compilação: setup-android tentou instalar o pacote obsoleto tools. Corrigido para platform-tools, platforms;android-35 e build-tools;35.0.0. Verificar resultado da nova execução.
+
+## Privacidade operacional
+QR e perfis processados localmente. Diagnóstico não é enviado pela aplicação. Teste de rede revela conexão e consulta example.com aos respectivos serviços. WhatsApp/SMS/e-mail recebem destinatário e mensagem ao abrir o rascunho; o usuário confirma o envio nesses apps. Ao configurar DNS externo, o provedor recebe as consultas DNS do dispositivo.

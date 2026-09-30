@@ -4,11 +4,14 @@ plugins {
 }
 
 val repo = (findProperty("githubRepo") as String?) ?: "vimakasystems-git/vimaka-android-superbooster"
-val ver = (findProperty("appVersion") as String?) ?: "1.1.0"
-val code = ((findProperty("appCode") as String?) ?: "2").toInt()
+val ver = (findProperty("appVersion") as String?) ?: "1.2.0"
+val code = ((findProperty("appCode") as String?) ?: "3").toInt()
 val ks = System.getenv("KEYSTORE_FILE")
 
-dependencies { implementation("androidx.core:core-ktx:1.13.1") }
+dependencies {
+    implementation("androidx.core:core-ktx:1.13.1")
+    implementation("com.journeyapps:zxing-android-embedded:4.3.0")
+}
 
 android {
     namespace = "br.vimaka.superbooster"
@@ -46,7 +49,7 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
-            signingConfig = signingConfigs.getByName(if (ks != null) "release" else "release")
+            signingConfig = signingConfigs.getByName("release")
         }
     }
     compileOptions {

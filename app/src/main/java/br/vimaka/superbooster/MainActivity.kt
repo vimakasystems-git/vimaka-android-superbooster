@@ -19,6 +19,8 @@ import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.URLSpan
 import android.content.ActivityNotFoundException
+import android.app.AlertDialog
+import com.google.zxing.integration.android.IntentIntegrator
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.ScrollView
@@ -64,6 +66,24 @@ adb shell settings put global animator_duration_scale 0.5
         btn(root, "7. Tuning guiado") { DeviceTools.tuning(this) }
         btn(root, "8. RAM, zRAM e cartão microSD") { show(DeviceTools.memory(this)) }
         btn(root, "9. Android: dispositivo e atualizações") { DeviceTools.firmware(this) }
+        btn(root, "10. Check de desempenho: RAM / bateria / temperatura / I/O") { PerformanceCheck.run(this) { show(it) } }
+        btn(root, "11. Testar rede, gateway, DNS e HTTPS") {
+            AlertDialog.Builder(this).setMessage("O teste consulta example.com via DNS e HTTPS. Executar agora?")
+                .setPositiveButton("Testar") { _, _ -> NetworkCheck.run(this) { show(it) } }.setNegativeButton("Cancelar", null).show()
+        }
+        btn(root, "12. Proteção de DNS e anúncios") { NetworkCheck.settings(this) }
+        btn(root, "13. Câmera: leitor QR Code") {
+            IntentIntegrator(this).setDesiredBarcodeFormats(IntentIntegrator.QR_CODE)
+                .setPrompt("Aproxime o QR, limpe a lente e toque no botão de volume para a lanterna")
+                .setBeepEnabled(false).setOrientationLocked(false).setBarcodeImageEnabled(false).initiateScan()
+        }
+        btn(root, "14. Divulgação Vimaka: SMS / WhatsApp / e-mail") { MarketingComposer.open(this) }
+        btn(root, "15. QR em imagem: contraste e cores invertidas") {
+            startActivityForResult(Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+                type = "image/*"; addCategory(Intent.CATEGORY_OPENABLE)
+            }, 5001)
+        }
+        if (BuildConfig.DEVELOPER_EDITION) btn(root, "16. Tuning Developer: aplicar / restaurar animações") { AdvancedTuning.open(this) }
         out = TextView(this).apply { textSize = 14f; setTextIsSelectable(true); setPadding(0, 24, 0, 0) }
         root.addView(out)
         val credits = "Created by Douglas Cardoso | https://vimaka.com | WhatsApp +55 11 945546072"
@@ -83,6 +103,24 @@ adb shell settings put global animator_duration_scale 0.5
 
     private fun btn(p: LinearLayout, t: String, a: () -> Unit) =
         p.addView(Button(this).apply { text = t; setOnClickListener { try { a() } catch (e: Exception) { show("Não foi possível executar: ${e.localizedMessage}") } } })
+
+    @Deprecated("Compatibilidade com integração ZXing")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == 5001) {
+            if (resultCode == RESULT_OK) data?.data?.let { QrImageReader.decode(this, it) { message -> show(message) } }
+            return
+        }
+        val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
+        if (result != null) {
+            val content = result.contents
+            if (content != null) {
+                show("QR Code lido:\n$content")
+                AlertDialog.Builder(this).setTitle("QR Code: revisar conteúdo")
+                    .setMessage(content).setPositiveButton("Copiar") { _, _ -> copy(content) }
+                    .setNegativeButton("Fechar", null).show()
+            } else show("Leitura QR cancelada ou não concluída.")
+        } else super.onActivityResult(requestCode, resultCode, data)
+    }
 
     private fun dp(value: Int) = (value * resources.displayMetrics.density).toInt()
 
