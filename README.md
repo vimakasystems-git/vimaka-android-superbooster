@@ -68,3 +68,8 @@ Monitor de rede registra mudanças de interface, gateway e DNS enquanto a tela d
 
 ## Correção de compatibilidade Android 8
 Compilação da versão anterior concluída, mas lint detectou uso direto de longVersionCode (API 28). Substituído por PackageInfoCompat para minSdk 26. Validar a nova execução antes de instalar.
+
+## CPU Root: edição Developer apenas
+Módulo opcional solicita autorização ao gerenciador root já instalado no aparelho. Inspeciona políticas cpufreq, aplica governor performance somente quando suportado, salva parâmetros originais antes de escrever e oferece restauração na mesma inicialização do kernel. Recusa aplicação com estado térmico moderado ou superior ou bateria ≥42°C. Tenta rollback em falha parcial. Não faz root, overclock, tuning GPU, swap, remoção de limites térmicos nem controle dos processos de terceiros. Código de execução root não é incluído na edição Play. Este módulo precisa teste em hardware compatível; não foi executado em um tablet real. O fabricante pode sobrescrever as configurações.
+
+A execução ae49744 passou compilação, lint e testes QR de ambas as edições. Revalidar após inclusão do módulo Root.
