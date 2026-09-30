@@ -61,3 +61,10 @@ QR e perfis processados localmente. Diagnóstico não é enviado pela aplicaçã
 
 ## Testes QR e tuning
 CI inclui testes de decodificação QR normal, invertido, baixo contraste, imagem vazia e dimensões inválidas. Os testes sintéticos não substituem validação da câmera do tablet. Ajustes de animação são o único tuning automático do sistema implementado; os demais ajustes são guiados. Perfis selecionam prioridades para revisão, sem manter apps presos na RAM.
+
+## Hardware e controle de rede
+Relatório de SoC (Android 12+), placa, ABI, CPUs, frequências/governors expostos pelo kernel, tamanho lógico zRAM, modos de tela e capacidades Camera2. Sem acesso ao tablet não há confirmação de hardware, benchmark real ou tuning aplicado. Valores podem ser omitidos pelo kernel/fabricante.
+Monitor de rede registra mudanças de interface, gateway e DNS enquanto a tela do app está aberta; para automaticamente ao sair. Não é firewall nem interceptação HTTPS.
+
+## Correção de compatibilidade Android 8
+Compilação da versão anterior concluída, mas lint detectou uso direto de longVersionCode (API 28). Substituído por PackageInfoCompat para minSdk 26. Validar a nova execução antes de instalar.

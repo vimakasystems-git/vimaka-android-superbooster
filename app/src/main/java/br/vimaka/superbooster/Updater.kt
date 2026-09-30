@@ -8,6 +8,7 @@ import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
 import androidx.core.content.FileProvider
+import androidx.core.content.pm.PackageInfoCompat
 import org.json.JSONObject
 import java.io.File
 import java.net.HttpURLConnection
@@ -71,7 +72,7 @@ object Updater {
                 download.inputStream.use { input -> f.outputStream().use { output -> input.copyTo(output) } }
             } finally { download.disconnect() }
             val info = act.packageManager.getPackageArchiveInfo(f.path, 0)
-            require(info != null && info.packageName == act.packageName && info.longVersionCode > BuildConfig.VERSION_CODE) { "APK incompatível ou versionCode não superior" }
+            require(info != null && info.packageName == act.packageName && PackageInfoCompat.getLongVersionCode(info) > BuildConfig.VERSION_CODE) { "APK incompatível ou versionCode não superior" }
             act.runOnUiThread {
                 if (!act.isFinishing && !act.isDestroyed) {
                     AlertDialog.Builder(act).setTitle("Atualização $tag")

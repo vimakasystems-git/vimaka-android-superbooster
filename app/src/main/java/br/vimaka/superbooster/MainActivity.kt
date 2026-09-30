@@ -93,6 +93,9 @@ adb shell settings put global animator_duration_scale 0.5
             }, 5001)
         }
         if (BuildConfig.DEVELOPER_EDITION) btn(root, "16. Tuning Developer: aplicar / restaurar animações") { AdvancedTuning.open(this) }
+        btn(root, "17. Monitor de interface / gateway / DNS") { NetworkCheck.startMonitor(this) { show(it) } }
+        btn(root, "18. Parar monitor de rede") { NetworkCheck.stopMonitor(); show("Monitor encerrado.") }
+        btn(root, "19. Hardware: CPU / governor / tela / câmeras / zRAM") { HardwareCheck.run(this) { show(it) } }
         out = TextView(this).apply { textSize = 14f; setTextIsSelectable(true); setPadding(0, 24, 0, 0) }
         root.addView(out)
         val credits = "Created by Douglas Cardoso | https://vimaka.com | WhatsApp +55 11 945546072"
@@ -141,6 +144,11 @@ adb shell settings put global animator_duration_scale 0.5
     override fun onResume() {
         super.onResume()
         if (BuildConfig.DEVELOPER_EDITION) Updater.resumeInstall(this)
+    }
+
+    override fun onStop() {
+        NetworkCheck.stopMonitor()
+        super.onStop()
     }
 
     private fun show(s: String) { out.text = s }

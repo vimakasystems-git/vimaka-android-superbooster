@@ -13,6 +13,30 @@ import javax.net.ssl.HttpsURLConnection
 import java.util.concurrent.Executors
 
 object NetworkCheck {
+    private var monitor: ConnectivityManager.NetworkCallback? = null
+    private var monitorManager: ConnectivityManager? = null
+    fun stopMonitor() {
+        monitor?.let { callback -> try { monitorManager?.unregisterNetworkCallback(callback) } catch (_: Exception) { } }
+        monitor = null; monitorManager = null
+    }
+    fun startMonitor(a: Activity, output: (String) -> Unit) {
+        stopMonitor()
+        val cm = a.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val callback = object : ConnectivityManager.NetworkCallback() {
+            override fun onLinkPropertiesChanged(network: android.net.Network, properties: android.net.LinkProperties) {
+                val text = "Monitor de rede (somente enquanto app aberto)\nInterface: ${properties.interfaceName}\nDNS: ${properties.dnsServers.joinToString { it.hostAddress.orEmpty() }}\nGateways: ${properties.routes.mapNotNull { it.gateway?.hostAddress }.distinct().joinToString()}\n\nMudança detectada nas propriedades da rede. Não inspeciona anúncios ou conteúdo HTTPS."
+                a.runOnUiThread { if (monitor === this && !a.isDestroyed && !a.isFinishing) output(text) }
+            }
+            override fun onLost(network: android.net.Network) {
+                a.runOnUiThread { if (monitor === this && !a.isDestroyed && !a.isFinishing) output("Monitor de rede: conexão anterior perdida.") }
+            }
+        }
+        try {
+            cm.registerDefaultNetworkCallback(callback)
+            monitorManager = cm; monitor = callback
+            output("Monitor ativo enquanto app aberto: mudanças de interface, gateway e DNS. Não analisa tráfego nem classifica anúncios.")
+        } catch (e: Exception) { output("Monitor indisponível: ${e.localizedMessage}") }
+    }
     private val worker = Executors.newSingleThreadExecutor()
     @Volatile private var busy = false
     fun run(a: Activity, output: (String) -> Unit) {
