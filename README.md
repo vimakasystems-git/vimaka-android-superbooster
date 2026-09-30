@@ -58,3 +58,6 @@ A primeira execução falhou antes da compilação: setup-android tentou instala
 
 ## Privacidade operacional
 QR e perfis processados localmente. Diagnóstico não é enviado pela aplicação. Teste de rede revela conexão e consulta example.com aos respectivos serviços. WhatsApp/SMS/e-mail recebem destinatário e mensagem ao abrir o rascunho; o usuário confirma o envio nesses apps. Ao configurar DNS externo, o provedor recebe as consultas DNS do dispositivo.
+
+## Testes QR e tuning
+CI inclui testes de decodificação QR normal, invertido, baixo contraste, imagem vazia e dimensões inválidas. Os testes sintéticos não substituem validação da câmera do tablet. Ajustes de animação são o único tuning automático do sistema implementado; os demais ajustes são guiados. Perfis selecionam prioridades para revisão, sem manter apps presos na RAM.

@@ -21,7 +21,7 @@ jobs:
         with:
           gradle-version: '8.9'
       - name: Compilar e verificar as duas edições
-        run: gradle assemblePlayDebug assembleDeveloperDebug lintPlayDebug lintDeveloperDebug
+        run: gradle assemblePlayDebug assembleDeveloperDebug lintPlayDebug lintDeveloperDebug testPlayDebugUnitTest testDeveloperDebugUnitTest
       - uses: actions/upload-artifact@v4
         if: always()
         with:

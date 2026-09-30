@@ -29,7 +29,7 @@ jobs:
           gradle assembleDeveloperRelease bundlePlayRelease \
             -PgithubRepo=${{ github.repository }} \
             -PappVersion=${GITHUB_REF_NAME#v} \
-            -PappCode=${{ github.run_number }}
+            -PappCode=$((1000 + GITHUB_RUN_NUMBER))
           mv app/build/outputs/apk/developer/release/app-developer-release.apk vimaka-android-superbooster.apk
       - uses: softprops/action-gh-release@v2
         with: { files: vimaka-android-superbooster.apk }

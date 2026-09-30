@@ -41,6 +41,15 @@ adb shell settings put global animator_duration_scale 0.5
     override fun onCreate(b: Bundle?) {
         super.onCreate(b)
         val root = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL; setPadding(dp(20), dp(20), dp(20), dp(20)) }
+        root.setOnApplyWindowInsetsListener { view, insets ->
+            if (android.os.Build.VERSION.SDK_INT >= 30) {
+                val bars = insets.getInsets(android.view.WindowInsets.Type.systemBars())
+                view.setPadding(dp(20) + bars.left, dp(20) + bars.top, dp(20) + bars.right, dp(20) + bars.bottom)
+            } else {
+                view.setPadding(dp(20), dp(20) + insets.systemWindowInsetTop, dp(20), dp(20) + insets.systemWindowInsetBottom)
+            }
+            insets
+        }
         root.addView(ImageView(this).apply {
             setImageResource(R.drawable.vimaka_logo)
             contentDescription = "Vimaka Sistemas Inteligentes"

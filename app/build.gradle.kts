@@ -11,6 +11,7 @@ val ks = System.getenv("KEYSTORE_FILE")
 dependencies {
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
+    testImplementation("junit:junit:4.13.2")
 }
 
 android {
